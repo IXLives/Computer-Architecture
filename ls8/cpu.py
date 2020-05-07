@@ -2,6 +2,11 @@
 
 import sys
 
+# OP CODES
+HLT = 0b00000001  # Halt function, if HLT is encountered running = False
+LDI = 0b10000010  # SAVE function
+PRN = 0b01000111  # PRINT function
+
 
 class CPU:
     """Main CPU class."""
@@ -9,7 +14,7 @@ class CPU:
     def __init__(self):
         """Construct a new CPU."""
         self.CPU = {}
-        self.ram = []
+        self.ram = [0] * 8
         self.reg = [0] * 8
         self.pc = 0
         self.running = False
@@ -65,13 +70,56 @@ class CPU:
         print()
 
     def ram_read(self, pc_num):
-        pass
+        return(self.ram[pc_num])
 
-    def ram_write(self):
-        pass
+    def ram_write(self, value, pc_num):
+        print(value, pc_num)
+        self.ram[pc_num] = value
 
     def run(self):
         """Run the CPU."""
-        self.trace()
+        INSTRUCTION_REGISTER = None
+        # inst_inc = 0
         self.running = True
-        pass
+
+        while self.running:
+            self.trace()
+            # Add our instruction to the instruction register from ram
+            INSTRUCTION_REGISTER = self.ram[self.pc]
+            # Extract the command
+            COMMAND = INSTRUCTION_REGISTER
+            # print(COMMAND)
+
+            # Execution Loop #
+
+            # if our command is HALT
+            if COMMAND == HLT:
+                # shutdown
+                self.running = False
+                self.pc += 1
+            # if our command is LDI (save)
+            elif COMMAND == LDI:
+                # get the value to be saved from ram
+                val_to_save = self.ram[self.pc + 2]
+                # get destination from ram
+                destination = self.ram[self.pc + 1]
+                # save_to_ram
+                self.reg[destination] = val_to_save
+                # increment pc
+                self.pc += 3
+            # if command is PRN (print)
+            elif COMMAND == PRN:
+                # get reg location of value to print
+                reg_loc = self.ram[self.pc + 1]
+                # get value to print
+                val_to_print = self.reg[reg_loc]
+                # print it
+                print(f'PRINTING REQUESTED VALUE: {val_to_print}')
+                # increment pc
+                self.pc += 2
+            # if command is unrecognized
+            else:
+                # error message
+                print(f'Unknown instruction{COMMAND}')
+                # crash
+                sys.exit(1)
