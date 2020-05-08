@@ -18,27 +18,15 @@ class CPU:
         self.reg = [0] * 8
         self.pc = 0
         self.running = False
+        self.branchtable = {}
+        self.branchtable[HLT] = self.handle_halt
+        self.branchtable[LDI] = self.handle_save
+        self.branchtable[PRN] = self.handle_print
+        self.branchtable[MUL] = self.handle_mul
 
     def load(self):
         """Load a program into memory."""
-
         address = 0
-
-        # For now, we've just hardcoded a program:
-
-        # program = [
-        #     # From print8.ls8
-        #     0b10000010,  # LDI R0,8
-        #     0b00000000,
-        #     0b00001000,
-        #     0b01000111,  # PRN R0
-        #     0b00000000,
-        #     0b00000001,  # HLT
-        # ]
-
-        # for instruction in program:
-        #     self.ram[address] = instruction
-        #     address += 1
         arguments = sys.argv
         if len(arguments) < 2:
             print('Need proper filename passed')
@@ -92,6 +80,34 @@ class CPU:
         # print(MDR, MAR)
         self.ram[MAR] = MDR
 
+    def handle_halt(self):
+        self.running = False
+        self.pc += 1
+
+    def handle_save(self):
+        # get the value to be saved from ram
+        val_to_save = self.ram[self.pc + 2]
+        # get destination from ram
+        destination = self.ram[self.pc + 1]
+        # save_to_ram
+        self.reg[destination] = val_to_save
+        # increment pc
+        self.pc += 3
+
+    def handle_mul(self):
+        self.alu('MUL', self.ram[self.pc + 1], self.ram[self.pc + 2])
+        self.pc += 3
+
+    def handle_print(self):
+        # get reg location of value to print
+        reg_loc = self.ram[self.pc + 1]
+        # get value to print
+        val_to_print = self.reg[reg_loc]
+        # print it
+        print(f'PRINTING REQUESTED VALUE: {val_to_print}')
+        # increment pc
+        self.pc += 2
+
     def run(self):
         """Run the CPU."""
         IR = None
@@ -107,36 +123,37 @@ class CPU:
             # print(COMMAND)
 
             # Execution Loop #
-
+            if COMMAND in self.branchtable:
+                self.branchtable[COMMAND]()
             # if our command is HALT
-            if COMMAND == HLT:
-                # shutdown
-                self.running = False
-                self.pc += 1
-            # if our command is LDI (save)
-            elif COMMAND == LDI:
-                # get the value to be saved from ram
-                val_to_save = self.ram[self.pc + 2]
-                # get destination from ram
-                destination = self.ram[self.pc + 1]
-                # save_to_ram
-                self.reg[destination] = val_to_save
-                # increment pc
-                self.pc += 3
-            # if command is MUL (multiply)
-            elif COMMAND == MUL:
-                self.alu('MUL', 0, 1)
-                self.pc += 3
-            # if command is PRN (print)
-            elif COMMAND == PRN:
-                # get reg location of value to print
-                reg_loc = self.ram[self.pc + 1]
-                # get value to print
-                val_to_print = self.reg[reg_loc]
-                # print it
-                print(f'PRINTING REQUESTED VALUE: {val_to_print}')
-                # increment pc
-                self.pc += 2
+            # if COMMAND == HLT:
+            #     # shutdown
+            #     self.running = False
+            #     self.pc += 1
+            # # if our command is LDI (save)
+            # elif COMMAND == LDI:
+            #     # get the value to be saved from ram
+            #     val_to_save = self.ram[self.pc + 2]
+            #     # get destination from ram
+            #     destination = self.ram[self.pc + 1]
+            #     # save_to_ram
+            #     self.reg[destination] = val_to_save
+            #     # increment pc
+            #     self.pc += 3
+            # # if command is MUL (multiply)
+            # elif COMMAND == MUL:
+            #     self.alu('MUL', self.ram[self.pc + 1], self.ram[self.pc + 2])
+            #     self.pc += 3
+            # # if command is PRN (print)
+            # elif COMMAND == PRN:
+            #     # get reg location of value to print
+            #     reg_loc = self.ram[self.pc + 1]
+            #     # get value to print
+            #     val_to_print = self.reg[reg_loc]
+            #     # print it
+            #     print(f'PRINTING REQUESTED VALUE: {val_to_print}')
+            #     # increment pc
+            #     self.pc += 2
             # if command is unrecognized
             else:
                 # error message
