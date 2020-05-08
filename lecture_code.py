@@ -69,10 +69,45 @@ add_two_nums = [
     HALT,
 ]
 
-memory = add_two_nums
+memory = [0] * 256
 registers = [0] * 8
 running = True
 pc = 0
+
+# Read from file, and load into memory
+# Read the filename from command line arguments
+# open file, load each line into memory
+# try not to crash
+
+
+def load_program():
+    address = 0
+    # get the arguments
+    arguments = sys.argv
+    # check to make sure there is an argument
+    if len(arguments) < 2:
+        print('Need proper filename passed')
+        sys.exit(1)
+    # extract filename from arguments
+    filename = arguments[1]
+    # open the file
+    with open(filename) as f:
+        for line in f:
+            if line == '':
+                continue
+            # split the line into a list containing everything before # in [0] and everything after # in [1]
+            comment_split = line.split('#')
+            # extract num from comment_split
+            num = comment_split[0].strip()
+            # set in memory
+            memory[address] = int(num)
+            # int can take a 2nd argument for base, to convert this to binary use int(line, 2)
+            # increment address
+            address += 1
+
+
+load_program()
+
 
 while running:
     # lets do some things
