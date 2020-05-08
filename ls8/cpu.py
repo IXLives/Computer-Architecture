@@ -125,36 +125,6 @@ class CPU:
             # Execution Loop #
             if COMMAND in self.branchtable:
                 self.branchtable[COMMAND]()
-            # if our command is HALT
-            # if COMMAND == HLT:
-            #     # shutdown
-            #     self.running = False
-            #     self.pc += 1
-            # # if our command is LDI (save)
-            # elif COMMAND == LDI:
-            #     # get the value to be saved from ram
-            #     val_to_save = self.ram[self.pc + 2]
-            #     # get destination from ram
-            #     destination = self.ram[self.pc + 1]
-            #     # save_to_ram
-            #     self.reg[destination] = val_to_save
-            #     # increment pc
-            #     self.pc += 3
-            # # if command is MUL (multiply)
-            # elif COMMAND == MUL:
-            #     self.alu('MUL', self.ram[self.pc + 1], self.ram[self.pc + 2])
-            #     self.pc += 3
-            # # if command is PRN (print)
-            # elif COMMAND == PRN:
-            #     # get reg location of value to print
-            #     reg_loc = self.ram[self.pc + 1]
-            #     # get value to print
-            #     val_to_print = self.reg[reg_loc]
-            #     # print it
-            #     print(f'PRINTING REQUESTED VALUE: {val_to_print}')
-            #     # increment pc
-            #     self.pc += 2
-            # if command is unrecognized
             else:
                 # error message
                 print(f'Unknown instruction, {COMMAND}')
