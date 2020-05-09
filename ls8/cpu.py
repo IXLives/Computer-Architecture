@@ -23,6 +23,8 @@ class CPU:
         self.branchtable[LDI] = self.handle_save
         self.branchtable[PRN] = self.handle_print
         self.branchtable[MUL] = self.handle_mul
+        self.branchtable[PUSH] = self.handle_push
+        self.branchtable[POP] = self.handle_pop
 
     def load(self):
         """Load a program into memory."""
@@ -107,6 +109,12 @@ class CPU:
         print(f'PRINTING REQUESTED VALUE: {val_to_print}')
         # increment pc
         self.pc += 2
+
+    def handle_push(self):
+        pass
+
+    def handle_pop(self):
+        pass
 
     def run(self):
         """Run the CPU."""
