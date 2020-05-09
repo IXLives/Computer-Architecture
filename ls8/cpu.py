@@ -20,7 +20,6 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8
         self.pc = 0
-        self.stack = [None] * 8
         self.SP = 7
         self.running = False
         self.branchtable = {}
@@ -45,7 +44,7 @@ class CPU:
                     continue
                 comment_split = line.split('#')
                 command = comment_split[0].strip()
-                print(command, int(command, 2))
+                # print(command, int(command, 2))
                 self.ram_write(int(command, 2), address)
                 address += 1
 
