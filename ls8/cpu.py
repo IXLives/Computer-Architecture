@@ -7,6 +7,9 @@ HLT = 0b00000001  # Halt function, if HLT is encountered running = False
 LDI = 0b10000010  # SAVE function
 PRN = 0b01000111  # PRINT function
 MUL = 0b10100010  # MULTIPLY function
+PUSH = 0b01000101  # PUSH function -- add the value from the given register to the stack
+# POP function -- pop the value from the top of the stack to the given register
+POP = 0b01000110
 
 
 class CPU:
@@ -17,6 +20,8 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8
         self.pc = 0
+        self.stack = [None] * 8
+        self.SP = 7
         self.running = False
         self.branchtable = {}
         self.branchtable[HLT] = self.handle_halt
