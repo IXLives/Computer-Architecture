@@ -21,6 +21,7 @@ class CPU:
         self.reg = [0] * 8
         self.pc = 0
         self.SP = 7
+        self.reg[self.SP] = len(self.ram) - 1
         self.running = False
         self.branchtable = {}
         self.branchtable[HLT] = self.handle_halt
@@ -115,10 +116,22 @@ class CPU:
         self.pc += 2
 
     def handle_push(self):
-        pass
+        # Push
+        # Location
+        reg = self.ram[self.pc + 1]
+        self.reg[self.SP] -= 1
+        reg_value = self.reg[reg]
+        self.ram[self.reg[self.SP]] = reg_value
+        self.pc += 2
 
     def handle_pop(self):
-        pass
+        # Pop
+        # Location
+        value = self.ram[self.reg[self.SP]]
+        reg = self.ram[self.pc + 1]
+        self.reg[reg] = value
+        self.reg[self.SP] += 1
+        self.pc += 2
 
     def run(self):
         """Run the CPU."""
