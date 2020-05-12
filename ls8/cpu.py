@@ -10,6 +10,8 @@ MUL = 0b10100010  # MULTIPLY function
 PUSH = 0b01000101  # PUSH function -- add the value from the given register to the stack
 # POP function -- pop the value from the top of the stack to the given register
 POP = 0b01000110
+CALL = 0b01010000  # CALL function
+RET = 0b00010001  # RET function
 
 
 class CPU:
@@ -30,6 +32,8 @@ class CPU:
         self.branchtable[MUL] = self.handle_mul
         self.branchtable[PUSH] = self.handle_push
         self.branchtable[POP] = self.handle_pop
+        self.branchtable[CALL] = self.handle_call
+        self.branchtable[RET] = self.handle_ret
 
     def load(self):
         """Load a program into memory."""
@@ -132,6 +136,12 @@ class CPU:
         self.reg[reg] = value
         self.reg[self.SP] += 1
         self.pc += 2
+
+    def handle_call(self):
+        pass
+
+    def handle_ret(self):
+        pass
 
     def run(self):
         """Run the CPU."""
