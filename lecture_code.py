@@ -8,6 +8,8 @@ PRINT_NUM = 3
 SAVE = 4
 PRINT_REGISTER = 5
 ADD = 6
+PUSH = 7
+POP = 8
 
 print_ian_program = [
     PRINT_IAN,
@@ -70,9 +72,11 @@ add_two_nums = [
 ]
 
 memory = [0] * 256
+SP = 7
 registers = [0] * 8
 running = True
 pc = 0
+registers[SP] = len(memory) - 1
 
 # Read from file, and load into memory
 # Read the filename from command line arguments
@@ -154,6 +158,24 @@ while running:
         # shutdown
         running = False
         pc += 1
+    # if command is PUSH
+    elif command == PUSH:
+        register = memory[pc + 1]
+        registers[SP] -= 1
+        # print(f'Stack: {registers[SP]}')
+        # print(f'location: {memory[pc + 1]}')
+        reg_value = registers[register]
+        # print(f'value: {reg_value}')
+        memory[registers[SP]] = reg_value
+        pc += 2
+    # if command is POP
+    elif command == POP:
+        value = memory[registers[SP]]
+        register = memory[pc + 1]
+        registers[register] = value
+        # print(f'value: {memory[registers[SP]]}')
+        registers[SP] += 1
+        pc += 2
     # if command is non-recognizable
     else:
         # error message
