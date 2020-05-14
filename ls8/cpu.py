@@ -148,7 +148,6 @@ class CPU:
         self.ram[self.reg[self.SP]] = self.pc + 2
         reg = self.ram[self.pc + 1]
         reg_value = self.reg[reg]
-        print(reg_value)
         self.pc = reg_value
 
     def handle_ret(self):
@@ -163,7 +162,7 @@ class CPU:
         self.running = True
 
         while self.running:
-            self.trace()
+            # self.trace()
             # Add our instruction to the instruction register from ram
             IR = self.ram[self.pc]
             # Extract the command
