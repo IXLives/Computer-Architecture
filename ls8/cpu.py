@@ -14,6 +14,9 @@ CALL = 0b01010000  # CALL function
 RET = 0b00010001  # RET function
 ADD = 0b10100000  # ADD function
 ST = 0b10000100  # ST function
+JMP = 0b01010100  # JMP - jump to address stored in given register
+IRET = 0b00010011  # IRET - interrupt return
+PRA = 0b01001000  # PRA - print alpha
 
 
 class CPU:
@@ -38,6 +41,9 @@ class CPU:
         self.branchtable[RET] = self.handle_ret
         self.branchtable[ADD] = self.handle_add
         self.branchtable[ST] = self.handle_ST
+        self.branchtable[IRET] = self.handle_IRET
+        self.branchtable[JMP] = self.handle_jump
+        self.branchtable[PRA] = self.handle_PRA
 
     def load(self):
         """Load a program into memory."""
@@ -158,6 +164,15 @@ class CPU:
         self.pc = return_value
 
     def handle_ST(self):
+        pass
+
+    def handle_IRET(self):
+        pass
+
+    def handle_jump(self):
+        pass
+
+    def handle_PRA(self):
         pass
 
     def run(self):
