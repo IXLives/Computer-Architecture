@@ -13,6 +13,7 @@ POP = 0b01000110
 CALL = 0b01010000  # CALL function
 RET = 0b00010001  # RET function
 ADD = 0b10100000  # ADD function
+ST = 0b10000100  # ST function
 
 
 class CPU:
@@ -36,6 +37,7 @@ class CPU:
         self.branchtable[CALL] = self.handle_call
         self.branchtable[RET] = self.handle_ret
         self.branchtable[ADD] = self.handle_add
+        self.branchtable[ST] = self.handle_ST
 
     def load(self):
         """Load a program into memory."""
@@ -154,6 +156,9 @@ class CPU:
         return_value = self.ram[self.reg[self.SP]]
         self.reg[self.SP] += 1
         self.pc = return_value
+
+    def handle_ST(self):
+        pass
 
     def run(self):
         """Run the CPU."""
