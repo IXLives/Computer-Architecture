@@ -10,6 +10,8 @@ PRINT_REGISTER = 5
 ADD = 6
 PUSH = 7
 POP = 8
+CALL = 9
+RET = 0
 
 print_ian_program = [
     PRINT_IAN,
@@ -97,11 +99,11 @@ def load_program():
     # open the file
     with open(filename) as f:
         for line in f:
-            if line == '':
-                continue
             # split the line into a list containing everything before # in [0] and everything after # in [1]
             comment_split = line.split('#')
             # extract num from comment_split
+            if comment_split[0] == '' or comment_split[0] == '\n':
+                continue
             num = comment_split[0].strip()
             # set in memory
             memory[address] = int(num)
@@ -176,6 +178,22 @@ while running:
         # print(f'value: {memory[registers[SP]]}')
         registers[SP] += 1
         pc += 2
+    elif command == CALL:
+        # Calls a subroutine at the address stored in the given register
+        # store the next line to execute onto the stack
+        # this will be the line we return to after our subroutine
+        registers[SP] -= 1
+        memory[registers[SP]] = pc + 2
+        # read the value in the register passed with CALL
+        register = memory[pc + 1]
+        reg_value = registers[register]
+        # set the PC to that value
+        pc = reg_value
+    elif command == RET:
+        # Pop the value from the top of the stack and store it in the PC
+        return_value = memory[registers[SP]]
+        registers[SP] += 1
+        pc = return_value
     # if command is non-recognizable
     else:
         # error message
