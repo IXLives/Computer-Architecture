@@ -12,6 +12,7 @@ PUSH = 0b01000101  # PUSH function -- add the value from the given register to t
 POP = 0b01000110
 CALL = 0b01010000  # CALL function
 RET = 0b00010001  # RET function
+ADD = 0b10100000  # ADD function
 
 
 class CPU:
@@ -34,6 +35,7 @@ class CPU:
         self.branchtable[POP] = self.handle_pop
         self.branchtable[CALL] = self.handle_call
         self.branchtable[RET] = self.handle_ret
+        self.branchtable[ADD] = self.handle_add
 
     def load(self):
         """Load a program into memory."""
@@ -45,9 +47,9 @@ class CPU:
         filename = arguments[1]
         with open(filename) as f:
             for line in f:
-                if line == '':
-                    continue
                 comment_split = line.split('#')
+                if comment_split[0] == '' or comment_split[0] == '\n':
+                    continue
                 command = comment_split[0].strip()
                 # print(command, int(command, 2))
                 self.ram_write(int(command, 2), address)
@@ -109,6 +111,10 @@ class CPU:
         self.alu('MUL', self.ram[self.pc + 1], self.ram[self.pc + 2])
         self.pc += 3
 
+    def handle_add(self):
+        self.alu('ADD', self.ram[self.pc + 1], self.ram[self.pc + 2])
+        self.pc += 3
+
     def handle_print(self):
         # get reg location of value to print
         reg_loc = self.ram[self.pc + 1]
@@ -138,10 +144,17 @@ class CPU:
         self.pc += 2
 
     def handle_call(self):
-        pass
+        self.reg[self.SP] -= 1
+        self.ram[self.reg[self.SP]] = self.pc + 2
+        reg = self.ram[self.pc + 1]
+        reg_value = self.reg[reg]
+        print(reg_value)
+        self.pc = reg_value
 
     def handle_ret(self):
-        pass
+        return_value = self.ram[self.reg[self.SP]]
+        self.reg[self.SP] += 1
+        self.pc = return_value
 
     def run(self):
         """Run the CPU."""
